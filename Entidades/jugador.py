@@ -1,5 +1,4 @@
-# empezas con dos monedas
-# ubica premios y castigos de manera random
+
 
 class Jugador:
     def __init__(self, nombre: str, posicion: int = 0, monedas: int = 2):
@@ -8,18 +7,15 @@ class Jugador:
         self.monedas = monedas
 
     def mover(self, pasos: int) -> None:
-        """Avanza en el tablero sin pasarse de la casilla 30."""
         self.posicion = min(30, self.posicion + pasos)
 
     def aplicar_efecto_movimiento(self, delta: int) -> None:
-        """Aplica un efecto de movimiento en la posición actual."""
         if delta == -999:
             self.posicion = 0
         else:
             self.posicion = max(0, min(30, self.posicion + delta))
 
     def aplicar_efecto_monedas(self, delta: int) -> None:
-        """Aplica un efecto económico (premio/castigo) a las monedas."""
         if delta < 0:
             if self.monedas > 0:
                 self.monedas -= 1
