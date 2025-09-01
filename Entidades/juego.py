@@ -18,10 +18,10 @@ class Juego:
         self.jugadores = [Jugador(j1), Jugador(j2)]
         self.interactivo = interactivo
         self.rng = random.Random(semilla)
-        self.reglas = self.build_reglas()
+        self.reglas = self.crear_reglas()
         self.turn_gen = self.CambioDeTurno()
 
-    def build_reglas(self) -> Dict[str, Dict[int, int]]:
+    def crear_reglas(self) -> Dict[str, Dict[int, int]]:
         cells = list(range(1, 30))
         self.rng.shuffle(cells)
         mov_positions = cells[:5]
@@ -35,7 +35,7 @@ class Juego:
         mon = {pos: delta for pos, delta in zip(mon_positions, mon_values)}
         return {"mov": mov, "mon": mon}
 
-    def render_board(self) -> str:
+    def crear_tablero(self) -> str:
         def cell_str(i: int) -> str:
             tags = []
             if i in self.reglas.get("mov", {}):
@@ -54,12 +54,12 @@ class Juego:
             return f"{mark}{tag}"
 
         line = " ".join(map(cell_str, range(1, 31)))
-        
+
         info = (
             f"{BOLD}P1{RESET}={self.jugadores[0]}  |  "
             f"{BOLD}P2{RESET}={self.jugadores[1]}"
         )
-        legend = f"{DIM}Leyenda: (M)=movimiento ($)=monedas{RESET}"
+        legend = f"{DIM}M=movimiento $=monedas{RESET}"
         return f"\n{line}\n{info}\n{legend}\n"
 
     def TirarDado(self) -> int:
@@ -72,32 +72,32 @@ class Juego:
             idx += 1
 
 
-    def _winner_condition(self, j: Jugador) -> bool:
+    def Condicion_para_ganar(self, j: Jugador) -> bool:
         return j.posicion >= 30 and j.monedas > 0
 
-    def _loser_condition(self, j: Jugador) -> bool:
+    def Condicion_para_perder(self, j: Jugador) -> bool:
         return j.monedas <= 0
 
-    def _loop(self) -> None:
-        print(self.render_board())
+    def loop(self) -> None:
+        print(self.crear_tablero())
 
-        if any(self._winner_condition(j) for j in self.jugadores):
-            ganador = next(filter(self._winner_condition, self.jugadores))
-            print(f"\n{GREEN}🏆 {ganador.nombre} gana la partida!{RESET}")
+        if any(self.Condicion_para_ganar(j) for j in self.jugadores):
+            ganador = next(filter(self.Condicion_para_ganar, self.jugadores))
+            print(f"\n{GREEN} Ganó {ganador.nombre} !{RESET}")
             return
-        perdedor = next(filter(self._loser_condition, self.jugadores), None)
+        perdedor = next(filter(self.Condicion_para_perder, self.jugadores), None)
 
         if perdedor:
             ganador = next(j for j in self.jugadores if j is not perdedor)
-            print(f"\n{RED}💀 {perdedor.nombre} se quedó sin monedas.{RESET}")
-            print(f"{GREEN}🏆 {ganador.nombre} gana por abandono.{RESET}")
+            print(f"\n{RED} {perdedor.nombre} se quedó sin monedas {RESET}")
+            print(f"{GREEN} Gana {ganador.nombre} ! {RESET}")
             return
 
         idx = next(self.turn_gen)
         jugador = self.jugadores[idx]
 
         if self.interactivo:
-            input(f"{BOLD}Turno de {jugador.nombre}{RESET}. Presioná ENTER para tirar el dado… ")
+            input(f"{BOLD}Turno de {jugador.nombre}{RESET}. Tocá ENTER para tirar el dado ")
 
         d = self.TirarDado()
         pos_antes = jugador.posicion
@@ -124,10 +124,10 @@ class Juego:
             except Exception:
                 pass
 
-        self._loop()
+        self.loop()
 
     def jugar(self) -> None:
-        print(f"{BOLD}Reglas de movimiento:{RESET} {self.reglas['mov']}")
-        print(f"{BOLD}Reglas económicas:{RESET} {self.reglas['mon']}")
-        print(f"\n{BOLD}¡Comienza la partida!{RESET}")
-        self._loop()
+        print(f"{BOLD}Las reglas de movimiento son:{RESET} {self.reglas['mov']}")
+        print(f"{BOLD}Las reglas para las monedas son:{RESET} {self.reglas['mon']}")
+        print(f"\n{BOLD}¡Empieza el juegoooo!{RESET}")
+        self.loop()

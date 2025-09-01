@@ -3,19 +3,19 @@ from Entidades.juego import Juego, BOLD, RESET, RED
 from Exceptions.exceptions import InvalidModeError
 
 def pedir_modo() -> Tuple[bool, Optional[int]]:
-    print(f"{BOLD}Modos disponibles:{RESET} [s] Simulación  |  [i] Interactivo")
-    modo = input("Elegí modo (s/i): ").strip().lower() or "s"
+    print(f"{BOLD}Modos:{RESET} [s] Simulación  |  [i] Interactivo")
+    modo = input("Elegí un modo (s/i): ").strip().lower() or "s"
     if modo not in ("s", "i"):
         raise InvalidModeError("Modo inválido. Usá 's' o 'i'.")
     interactivo = (modo == "i")
 
-    semilla_raw = input("Semilla opcional (enter para aleatoria): ").strip()
+    semilla_raw = input("Ingresa una semilla (enter para aleatoria): ").strip()
     semilla: Optional[int] = None
     if semilla_raw:
         try:
             semilla = int(semilla_raw)
         except ValueError:
-            print(f"{RED}Semilla inválida, se usará aleatoria.{RESET}")
+            print(f"{RED}Semilla inválida, se usará una aleatoria.{RESET}")
             semilla = None
     return interactivo, semilla
 
