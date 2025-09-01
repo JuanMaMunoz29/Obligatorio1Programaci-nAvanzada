@@ -1,4 +1,4 @@
-
+from functools import reduce
 
 class Jugador:
     def __init__(self, nombre: str, posicion: int = 0, monedas: int = 2):
@@ -13,7 +13,15 @@ class Jugador:
         if delta == -999:
             self.posicion = 0
         else:
-            self.posicion = max(0, min(30, self.posicion + delta))
+            self.posicion = reduce(
+                lambda v, f: f(v),
+                [
+                    lambda v: v + delta,
+                    lambda v: min(30, v),
+                    lambda v: max(0, v),
+                ],
+                self.posicion
+            )
 
     def aplicar_efecto_monedas(self, delta: int) -> None:
         if delta < 0:

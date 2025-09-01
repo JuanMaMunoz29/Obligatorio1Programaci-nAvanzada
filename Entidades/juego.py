@@ -53,7 +53,8 @@ class Juego:
                 mark = f"{i:02d}"
             return f"{mark}{tag}"
 
-        line = " ".join(cell_str(i) for i in range(1, 31))
+        line = " ".join(map(cell_str, range(1, 31)))
+        
         info = (
             f"{BOLD}P1{RESET}={self.jugadores[0]}  |  "
             f"{BOLD}P2{RESET}={self.jugadores[1]}"
@@ -81,11 +82,11 @@ class Juego:
         print(self.render_board())
 
         if any(self._winner_condition(j) for j in self.jugadores):
-            ganador = next(j for j in self.jugadores if self._winner_condition(j))
+            ganador = next(filter(self._winner_condition, self.jugadores))
             print(f"\n{GREEN}🏆 {ganador.nombre} gana la partida!{RESET}")
             return
+        perdedor = next(filter(self._loser_condition, self.jugadores), None)
 
-        perdedor = next((j for j in self.jugadores if self._loser_condition(j)), None)
         if perdedor:
             ganador = next(j for j in self.jugadores if j is not perdedor)
             print(f"\n{RED}💀 {perdedor.nombre} se quedó sin monedas.{RESET}")
@@ -119,7 +120,7 @@ class Juego:
         if not self.interactivo:
             try:
                 import time
-                time.sleep(0.6)
+                time.sleep(1)
             except Exception:
                 pass
 
