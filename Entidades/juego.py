@@ -27,16 +27,14 @@ class Juego:
         mov_positions = cells[:5]
         self.rng.shuffle(cells)
         mon_positions = cells[:5]
-
         mov_values = [+2, +1, +3, -5, -999]
         mon_values = [+2, +1, +1, -1, -1]
-
         mov = {pos: delta for pos, delta in zip(mov_positions, mov_values)}
         mon = {pos: delta for pos, delta in zip(mon_positions, mon_values)}
         return {"mov": mov, "mon": mon}
 
     def crear_tablero(self) -> str:
-        def cell_str(i: int) -> str:
+        def revisar_celda(i: int) -> str:
             tags = []
             if i in self.reglas.get("mov", {}):
                 tags.append("M")
@@ -53,7 +51,7 @@ class Juego:
                 mark = f"{i:02d}"
             return f"{mark}{tag}"
 
-        line = " ".join(map(cell_str, range(1, 31)))
+        line = " ".join(map(revisar_celda, range(1, 31)))
 
         info = (
             f"{BOLD}P1{RESET}={self.jugadores[0]}  |  "
